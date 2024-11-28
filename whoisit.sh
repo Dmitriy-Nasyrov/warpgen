@@ -1,7 +1,8 @@
 #!/bin/bash
 
 clear
-echo "установка зависимостей на удаленный сервер"
+echo "Установка зависимостей на удаленный сервер."
+echo -e "\n"
 apt update -y && apt install sudo -y # для аеза нужен sudo
 sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools jq wget -y --fix-missing # апдейт
 
@@ -13,7 +14,7 @@ sec() { ins "$1" "$2" -H "authorization: Bearer $3" "${@:4}"; }
 response=$(ins POST "reg" -d "{\"install_id\":\"\",\"tos\":\"$(date -u +%FT%T.000Z)\",\"key\":\"${pub}\",\"fcm_token\":\"\",\"type\":\"ios\",\"locale\":\"en_US\"}")
 
 clear
-echo -e "Команда Hitech научит пользоваться дискордом! :)"
+echo -e "Команда Hitech починит вам дискорд! :)"
 
 id=$(echo "$response" | jq -r '.result.id')
 token=$(echo "$response" | jq -r '.result.token')
@@ -46,12 +47,16 @@ Endpoint = 188.114.97.66:3138
 EOM
 )
 
-echo -e "\n\n\n"
+echo -e "\n"
 [ -t 1 ] && echo "Если боитесь скачивать можете скопировать то что ниже в блокнот и назвать его WARP.conf"
+echo -e "\n"
 echo "${conf}"
-[ -t 1 ] && echo "конец конфига"
+echo -e "\n"
+[ -t 1 ] && echo "#############конец конфига"
 
 conf_base64=$(echo -n "${conf}" | base64 -w 0)
-echo "Скачать конфиг файлом:    https://dmitriy-nasyrov.github.io/warps/?filename=WARP.conf&content=${conf_base64}"
+echo "Скачать конфиг файлом: https://dmitriy-nasyrov.github.io/warps/?filename=WARP.conf&content=${conf_base64}"
+echo -e "\n"
+echo "https://dmitriy-nasyrov.github.io/warps/?filename=WARP.conf&content=${conf_base64}"
 echo -e "\n"
 echo "если что-то не получилось могу помочь в телеге https://t.me/perspektiv_net"
