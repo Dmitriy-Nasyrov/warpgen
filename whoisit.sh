@@ -1,9 +1,9 @@
 #!/bin/bash
 
 clear
-echo "Установка зависимостей..."
-apt update -y && apt install sudo -y # Для Aeza Terminator, там sudo не установлен по умолчанию
-sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools jq wget -y --fix-missing # Update второй раз, если sudo установлен и обязателен (в строке выше не сработал)
+echo "установка зависимостей на удаленный сервер"
+apt update -y && apt install sudo -y # для аеза нужен sudo
+sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools jq wget -y --fix-missing # апдейт
 
 priv="${1:-$(wg genkey)}"
 pub="${2:-$(echo "${priv}" | wg pubkey)}"
@@ -13,7 +13,7 @@ sec() { ins "$1" "$2" -H "authorization: Bearer $3" "${@:4}"; }
 response=$(ins POST "reg" -d "{\"install_id\":\"\",\"tos\":\"$(date -u +%FT%T.000Z)\",\"key\":\"${pub}\",\"fcm_token\":\"\",\"type\":\"ios\",\"locale\":\"en_US\"}")
 
 clear
-echo -e "НЕ ИСПОЛЬЗУЙТЕ GOOGLE CLOUD SHELL ДЛЯ ГЕНЕРАЦИИ! Если вы сейчас в Google Cloud Shell, прочитайте актуальный гайд: https://t.me/immalware/1211\n"
+echo -e "Команда Hitech научит пользоваться дискордом! :)"
 
 id=$(echo "$response" | jq -r '.result.id')
 token=$(echo "$response" | jq -r '.result.token')
@@ -47,11 +47,11 @@ EOM
 )
 
 echo -e "\n\n\n"
-[ -t 1 ] && echo "########## НАЧАЛО КОНФИГА ##########"
+[ -t 1 ] && echo "Если боитесь скачивать можете скопировать то что ниже в блокнот и назвать его WARP.conf"
 echo "${conf}"
-[ -t 1 ] && echo "########### КОНЕЦ КОНФИГА ###########"
+[ -t 1 ] && echo "конец конфига"
 
 conf_base64=$(echo -n "${conf}" | base64 -w 0)
-echo "Скачать конфиг файлом: https://dmitriy-nasyrov.github.io/warps/?filename=WARP.conf&content=${conf_base64}"
+echo "Скачать конфиг файлом:    https://dmitriy-nasyrov.github.io/warps/?filename=WARP.conf&content=${conf_base64}"
 echo -e "\n"
-echo "Что-то не получилось? Есть вопросы? Пишите в чат: https://t.me/immalware_chat"
+echo "если что-то не получилось могу помочь в телеге https://t.me/perspektiv_net"
