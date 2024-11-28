@@ -52,8 +52,5 @@ echo -e "\n\n\n"
 echo "${conf}"
 [ -t 1 ] && echo "########### КОНЕЦ КОНФИГА ###########"
 
-conf_base64=$(echo -n "${conf}" | base64 -w 0)
-echo "Скачать конфиг файлом: https://Dmitriy-Nasyrov.github.io/downloader.html?filename=WARP.conf&content=${conf_base64}"
-echo -e "\n"
-echo "Что-то не получилось? Есть вопросы? Пишите в чат: https://t.me/immalware_chat"
+
 
