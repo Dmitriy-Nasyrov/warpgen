@@ -6,6 +6,7 @@ echo "Установка зависимостей..."
 apt update -y && apt install sudo -y # Для Aeza Terminator, там sudo не установлен по умолчанию
 sudo apt-get update -y --fix-missing && sudo apt-get install wireguard-tools jq wget -y --fix-missing # Update второй раз, если sudo установлен и обязателен (в строке выше не сработал)
 
+# Генерация ключей
 priv="${1:-$(wg genkey)}"
 pub="${2:-$(echo "${priv}" | wg pubkey)}"
 api="https://api.cloudflareclient.com/v0i1909051800"
@@ -16,14 +17,15 @@ response=$(ins POST "reg" -d "{\"install_id\":\"\",\"tos\":\"$(date -u +%FT%T.00
 clear
 echo -e "НЕ ИСПОЛЬЗУЙТЕ GOOGLE CLOUD SHELL ДЛЯ ГЕНЕРАЦИИ! Если вы сейчас в Google Cloud Shell, прочитайте актуальный гайд: https://t.me/immalware/1211\n"
 
+# Извлекаем данные из ответа
 id=$(echo "$response" | jq -r '.result.id')
 token=$(echo "$response" | jq -r '.result.token')
 response=$(sec PATCH "reg/${id}" "$token" -d '{"warp_enabled":true}')
 peer_pub=$(echo "$response" | jq -r '.result.config.peers[0].public_key')
-#peer_endpoint=$(echo "$response" | jq -r '.result.config.peers[0].endpoint.host')
 client_ipv4=$(echo "$response" | jq -r '.result.config.interface.addresses.v4')
 client_ipv6=$(echo "$response" | jq -r '.result.config.interface.addresses.v6')
 
+# Создаем конфиг
 conf=$(cat <<-EOM
 [Interface]
 PrivateKey = ${priv}
@@ -47,11 +49,11 @@ Endpoint = 188.114.97.66:3138
 EOM
 )
 
+# Выводим конфиг на экран
 echo -e "\n\n\n"
 [ -t 1 ] && echo "########## НАЧАЛО КОНФИГА ##########"
 echo "${conf}"
 [ -t 1 ] && echo "########### КОНЕЦ КОНФИГА ###########"
 
-conf_base64=$(echo -n "${conf}" | base64 -w 0)
-echo -e "\n"
-echo "Что-то не получилось? Есть вопросы? Пишите в чат: https://t.me/immalware_chat"
+# Дополнительная информация
+echo -e "\nЕсли что-то не получилось или есть вопросы, пишите в чат: https://t.me/immalware_chat"
